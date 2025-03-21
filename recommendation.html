@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendation Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .recommendation-group {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container form-container">
+    <h2>Recommendation Information</h2>
+    <form id="recommendationForm">
+        <div id="recommendationsContainer">
+            <!-- Initial Recommendation -->
+            <div class="recommendation-group">
+                <div class="form-group">
+                    <label for="recommendationName0">Recommendation Name:</label>
+                    <input type="text" class="form-control" id="recommendationName0" name="recommendationName[]" required>
+                    <div class="error-message" id="recommendationName0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="recommendationDescription0">Recommendation Description:</label>
+                    <textarea class="form-control" id="recommendationDescription0" name="recommendationDescription[]" rows="3"></textarea>
+                    <div class="error-message" id="recommendationDescription0Error"></div>
+                </div>
+            </div>
+        </div>
+        <div class="button-container">
+            <button type="button" class="btn btn-secondary" id="addRecommendation">Add</button>
+              <button type="button" class="btn btn-danger" id="removeRecommendation">Delete</button>
+              <button type="button" class="btn btn-primary" id="recommendationBack">Back</button>
+              <button type="button" class="btn btn-primary" id="recommendationNext">Next</button>
+        </div>
+        
+        
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    let recommendationCount = 1;
+
+    let selectedProperty = {};
+    document.addEventListener("DOMContentLoaded", function() {
+        selectedProperty = JSON.parse(localStorage.getItem('selectedProperty')) || {};
+    });
+
+      document.getElementById("removeRecommendation").addEventListener("click", function() {
+       const recommendationsContainer = document.getElementById("recommendationsContainer");
+
+        // Check if there's more than one recommendation-group to remove
+       if (recommendationsContainer.children.length > 1) {
+            // Remove the last recommendation-group
+            recommendationsContainer.removeChild(recommendationsContainer.lastChild);
+            recommendationCount--; // Decrement recommendationCount
+       } else {
+            // Display an error message if you are trying to remove the last recommendation
+           alert("You cannot remove the last recommendation.");
+       }
+        });
+    document.getElementById("addRecommendation").addEventListener("click", function() {
+        const recommendationsContainer = document.getElementById("recommendationsContainer");
+        const newRecommendation = document.createElement("div");
+        newRecommendation.classList.add("recommendation-group");
+        newRecommendation.innerHTML = `
+            <div class="form-group">
+                <label for="recommendationName${recommendationCount}">Recommendation Name:</label>
+                <input type="text" class="form-control" id="recommendationName${recommendationCount}" name="recommendationName[]" required>
+                <div class="error-message" id="recommendationName${recommendationCount}Error"></div>
+            </div>
+            <div class="form-group">
+                <label for="recommendationDescription${recommendationCount}">Recommendation Description:</label>
+                <textarea class="form-control" id="recommendationDescription${recommendationCount}" name="recommendationDescription[]" rows="3"></textarea>
+                 <div class="error-message" id="recommendationDescription${recommendationCount}Error"></div>
+            </div>
+        `;
+        recommendationsContainer.appendChild(newRecommendation);
+        recommendationCount++;
+    });
+
+     document.getElementById("recommendationBack").addEventListener("click", function() {
+         window.location.href = "section.html";
+    });
+    document.getElementById("recommendationNext").addEventListener("click", function() {
+        let isValid = true;
+        const recommendationData = [];
+
+        // Clear previous error messages
+        for (let i = 0; i < recommendationCount; i++) {
+            document.getElementById(`recommendationName${i}Error`).textContent = "";
+            document.getElementById(`recommendationDescription${i}Error`).textContent = "";
+        }
+
+        // Validation
+        for (let i = 0; i < recommendationCount; i++) {
+            const recommendationName = document.getElementById(`recommendationName${i}`).value.trim();
+            const recommendationDescription = document.getElementById(`recommendationDescription${i}`).value.trim();
+
+            if (recommendationName === "") {
+                document.getElementById(`recommendationName${i}Error`).textContent = "Recommendation Name is required.";
+                isValid = false;
+            }
+             if (recommendationDescription === "") {
+                 document.getElementById(`recommendationDescription${i}Error`).textContent = "Recommendation Description is required.";
+                isValid = false;
+            }
+        }
+
+        if (isValid) {
+            // Store data and continue
+            for (let i = 0; i < recommendationCount; i++) {
+                recommendationData.push({
+                    recommendationId: generateId(),
+                    recommendationName: document.getElementById(`recommendationName${i}`).value,
+                    recommendationDescription: document.getElementById(`recommendationDescription${i}`).value,
+                });
+            }
+            //localStorage.setItem('recommendationData', JSON.stringify(recommendationData));
+            // Get previously saved recommendation data or initialize an empty object if it doesn't exist
+            let allRecommendationData = {}
+            if (localStorage.getItem('allRecommendationData'))
+                allRecommendationData = JSON.parse(localStorage.getItem('allRecommendationData')) || {};
+            
+            //Store the new reccpmendation data
+            if (selectedProperty.propertyId) allRecommendationData[selectedProperty.propertyId] = recommendationData;
+            localStorage.setItem('allRecommendationData', JSON.stringify(allRecommendationData));
+            window.location.href = "emergency.html";
+            } else {
+            // Display overall error message (optional)
+            alert("Please correct the errors in the form.");
+        }
+    });
+      function generateId() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+</script>
+
+</body>
+</html>

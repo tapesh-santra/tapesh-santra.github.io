@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Contact Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+         /* The Modal (background) */
+         .modal {
+           display: none; /* Hidden by default */
+           position: fixed; /* Stay in place */
+           z-index: 1; /* Sit on top */
+           left: 0;
+           top: 0;
+           width: 100%; /* Full width */
+           height: 100%; /* Full height */
+           overflow: auto; /* Enable scroll if needed */
+           background-color: rgb(0,0,0); /* Fallback color */
+           background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+           justify-content: center;
+           align-items: center;
+           display: flex;
+           
+         }
+        
+         /* Modal Content */
+         .modal-content {
+           background-color: #fefefe;
+           margin: 15% auto; /* 15% from the top and centered */
+          /*margin: 15% auto;  15% from the top and centered */
+           padding: 20px;
+           border: 1px solid #888;
+           width: 60%; /* 60% of the form container's width */
+           max-width: 600px; /* Ensure it doesn't become wider than the form */
+          
+         }
+        
+         /* The Close Button */
+         .close {
+           color: #aaa;
+           float: right;
+           font-size: 28px;
+           font-weight: bold;
+         }
+        
+         .close:hover,
+         .close:focus {
+           color: black;
+           text-decoration: none;
+           cursor: pointer;
+         }
+    </style>
+</head>
+
+<!-- The Modal -->
+<div id="congratulationsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>👏 Congratulations, you have created the first draft of the guidebooks for your properties!</p>
+    </div>
+</div>
+
+<body>
+
+<div class="container form-container">
+    <h2>Emergency Contact Information</h2>
+    <form id="emergencyForm">
+        <div class="form-group">
+            <label for="police">Police Number:</label>
+            <input type="text" class="form-control" id="police" name="police">
+        </div>
+        <div class="form-group">
+            <label for="fire">Fire Department Number:</label>
+            <input type="text" class="form-control" id="fire" name="fire">
+        </div>
+        <div class="form-group">
+            <label for="ambulance">Ambulance Number:</label>
+            <input type="text" class="form-control" id="ambulance" name="ambulance">
+        </div>
+        <div class="form-group">
+            <label for="hospital">Nearest Hospital Number:</label>
+            <input type="text" class="form-control" id="hospital" name="hospital">
+        </div>
+        <div class="form-group">
+            <label for="localContact">Local Contact Number:</label>
+            <input type="text" class="form-control" id="localContact" name="localContact">
+        </div>
+
+       <button type="button" class="btn btn-primary" id="emergencyBack">Back</button>
+        <button type="button" class="btn btn-success" id="submitForm">Submit</button>
+    </form>
+    <div id="selectPropertyForm"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    
+    let selectedProperty = {};
+    let properties = {}
+        document.addEventListener("DOMContentLoaded", function () {
+            selectedProperty = JSON.parse(localStorage.getItem('selectedProperty')) || {};
+            properties = JSON.parse(localStorage.getItem('properties')) || {};
+
+
+
+    });
+
+      document.getElementById("emergencyBack").addEventListener("click", function() {
+        window.location.href = "recommendation.html";
+    });
+    document.getElementById("submitForm").addEventListener("click", function() {
+        // Validation (add your validation logic here)
+
+       
+
+
+        // Store data (you'll need to extract the emergency data and store it)
+        let allEmergencyData = {}
+        allEmergencyData[selectedProperty.propertyId] = 
+         {
+            police: document.getElementById(`police`).value,
+            fire: document.getElementById(`fire`).value,
+            ambulance: document.getElementById(`ambulance`).value,
+            hospital: document.getElementById(`hospital`).value,
+            localContact: document.getElementById(`localContact`).value,
+        };
+        //Save allEmergencyData to local storage
+        localStorage.setItem('allEmergencyData', JSON.stringify(allEmergencyData));
+
+
+        
+        // guidebook created exists then read it from local storage
+        let guidebooksCreated = {};
+        if(localStorage.getItem(guidebooksCreated))
+            guidebooksCreated = JSON.parse(localStorage.getItem('guidebooksCreated')) || [];
+
+        // save the current guidebook
+        // step1 - read the sections for selected properties
+        let sections = localStorage.getItem('allSectionData')[selectedProperty.propertyId]
+        let recommendations = localStorage.getItem('allRecommendationData')[selectedProperty.propertyId]
+        let emergency = localStorage.getItem('allEmergencyData')[selectedProperty.propertyId]
+        let propertyDetails = localStorage.getItem('properties')[selectedProperty.propertyId]
+
+        // add the new guidebook info 
+        guidebooksCreated[selectedProperty.propertyId] = {}
+        guidebooksCreated[selectedProperty.propertyId].sections = sections
+        guidebooksCreated[selectedProperty.propertyId].recommendations = recommendations
+        guidebooksCreated[selectedProperty.propertyId].emergency = emergency
+        guidebooksCreated[selectedProperty.propertyId].propertyDetails = propertyDetails
+
+        console.log(guidebooksCreated)
+
+        //select properties which are in properties list, but not in guidebook created list
+        propertyIds = Object.keys(properties);
+        guidebookIds = Object.keys(guidebooksCreated) 
+        
+        let propertiesWithoutGuidebook = propertyIds.filter(propertyId => !guidebookIds.includes(propertyId));
+        
+    console.log(guidebookIds)
+    console.log(propertyIds)        
+    console.log(propertiesWithoutGuidebook)
+    // Check if there are properties without guidebooks
+        if (propertiesWithoutGuidebook.length > 0) {
+            localStorage.setItem('propertiesWithoutGuidebook',JSON.stringify(propertiesWithoutGuidebook))
+            //window.location.href = "select_property1.html";
+        } else {
+            // Show the congratulations message as a pop-up
+                showCongratulationsPopup();
+        }
+    });
+
+    function showCongratulationsPopup() {
+        // Get the modal
+        const modal = document.getElementById("congratulationsModal");
+
+        // Get the <span> element that closes the modal
+        const span = document.getElementsByClassName("close")[0];
+
+        // Open the modal
+        modal.style.display = "block";
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        };
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+    }
+</script>
+
+</body>
+</html>

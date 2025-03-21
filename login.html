@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="808512949870-b5k55mrl4amuqpkrfaq7jbqse61vsej2.apps.googleusercontent.com.apps.googleusercontent.com">
+    <title>Login / Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            padding: 10px; /* Add padding to body for mobile screens */
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 90%; /* Make the container responsive */
+            max-width: 400px;
+            text-align: center;
+        }
+        .social-login {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically */
+            align-items: center;
+            margin-bottom: 20px;
+            width:100%;
+        }
+        .social-button {
+            background-color: #eee;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .google {
+            background-color: #db4437;
+            color: white;
+        }
+         .facebook {
+            background-color: #4267B2;
+            color: white;
+        }
+         .apple {
+            background-color: #000000;
+            color: white;
+        }
+
+          .form-control {
+                width: 100%; /* Ensure inputs take up most of the container's width */
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Login / Sign Up</h2>
+
+    <div class="social-login">
+        
+        <!--button class="social-button google" id="googleLogin">Login with Google</button-->
+        <div 
+            class = "g_id_signin social-button google" 
+            data-type="standard"
+            data-width="100%" 
+            data-size="large" 
+            data-theme="" 
+            id="g_id_onload"
+            data-client_id="808512949870-b5k55mrl4amuqpkrfaq7jbqse61vsej2" data-login_uri="https://your domain/your_login_endpoint"
+            data-auto_prompt="false">
+        </div>
+        <!--div class="social-button facebook" id="facebookLogin">Login with Facebook</div-->
+        <div class="fb-login-button" 
+             data-width="" 
+             data-size="" 
+             data-button-type=""
+             data-layout=""
+             data-auto-logout-link="false"
+             data-use-continue-as="false">
+        </div>
+        
+
+
+    <!--button class="g_id_signin social-button google" id="googleLogin"> Log in with Google </button-->    
+       <!-- <div 
+            class="g_id_signin" 
+            data-type="standard" 
+            data-size="large" 
+            data-theme="outline" 
+            data-text="sign_in_with" 
+            data-shape=" rectangular" 
+            data-logo_alignment="left"
+        >
+        </div>
+    -->
+   
+        
+        <!--button class="social-button facebook" id="facebookLogin">Login with Facebook</button-->
+         <!--button class="social-button apple" id="appleLogin">Login with Apple</butto-->
+    </div>
+
+    <p>Or</p>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="button" class="btn btn-secondary" id="signUpButton">Sign Up</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+
+<!-- LOGIN WITH GOOGLE -->
+<script>
+    document.getElementById("googleLogin").addEventListener("click", function() {
+        // Redirect to the Google login flow on the server
+        //window.location.href = "808512949870-b5k55mrl4amuqpkrfaq7jbqse61vsej2.apps.googleusercontent.com.apps.googleusercontent.com"; // Replace with your actual server endpoint
+    /*google.accounts.id.initialize({
+    client_id: '808512949870-b5k55mrl4amuqpkrfaq7jbqse61vsej2',
+    callback: handleCredentialResponse
+    });
+    google.accounts.id.prompt();*/
+   
+   onSignIn();
+   
+   
+   
+    });
+
+    
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        // Handle regular email/password login
+         // Redirect to the select property page
+        window.location.href = "select_property1.html";
+    });
+
+    document.getElementById("signUpButton").addEventListener("click", function() {
+        // Redirect to the sign up page
+        window.location.href = "/signup"; // Replace with your actual signup page
+    });
+
+    function onSignIn(googleUser) {
+        
+        console.log('ID: ' + googleUser.getElementById()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + googleUser.getName());
+        console.log('Image URL: ' + googleUser.getImageUrl());
+        console.log('Email: ' + googleUser.getEmail()); // This is null if the 'email' scope is not present.
+        }
+</script>
+
+<script>
+
+    function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+      console.log('statusChangeCallback');
+      console.log(response);                   // The current login status of the person.
+      if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+        testAPI();  
+      } else {                                 // Not logged into your webpage or we are unable to tell.
+        document.getElementById('status').innerHTML = 'Please log ' +
+          'into this webpage.';
+      }
+    }
+  
+
+    <!-- Facebook login-->
+  
+    function checkLoginState() {               // Called when a person is finished with the Login Button.
+      FB.getLoginStatus(function(response) {   // See the onlogin handler
+        statusChangeCallback(response);
+      });
+    }
+  
+  
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '1195483061908384',
+        cookie     : true,                     // Enable cookies to allow the server to access the session.
+        xfbml      : true,                     // Parse social plugins on this webpage.
+        version    : 'v22.0'           // Use this Graph API version for this call.
+      });
+  
+  
+      FB.getLoginStatus(function(response) {   // Called after the JS SDK has been initialized.
+        statusChangeCallback(response);        // Returns the login status.
+      });
+    };
+   
+    function testAPI() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+      console.log('Welcome!  Fetching your information.... ');
+      FB.api('/me', function(response) {
+        console.log('Successful login for: ' + response.name);
+        document.getElementById('status').innerHTML =
+          'Thanks for logging in, ' + response.name + '!';
+      });
+    }
+  
+  </script>
+
+</body>
+</html>

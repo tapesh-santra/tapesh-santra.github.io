@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .property-group {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            color: red;
+        }
+        .button-container {
+            margin-top: 20px;
+            text-align: right; /* Align buttons to the right */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container form-container">
+    <h2>Property Information</h2>
+    <form id="propertyForm">
+        <div id="propertiesContainer">
+            <!-- Initial Property -->
+            <div class="property-group">
+                <div class="form-group">
+                    <label for="name0">Property Name:</label>
+                    <input type="text" class="form-control" id="name0" name="name[]" required>
+                    <div class="error-message" id="name0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="address0">Address:</label>
+                    <input type="text" class="form-control" id="address0" name="address[]" required>
+                    <div class="error-message" id="address0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="description0">Description:</label>
+                    <textarea class="form-control" id="description0" name="description[]" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="bedrooms0">Bedrooms:</label>
+                    <input type="number" class="form-control" id="bedrooms0" name="bedrooms[]" min="0" value="1" required>
+                    <div class="error-message" id="bedrooms0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="bathrooms0">Bathrooms:</label>
+                    <input type="number" class="form-control" id="bathrooms0" name="bathrooms[]" min="0" value="1" required>
+                    <div class="error-message" id="bathrooms0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="propertyType0">Property Type:</label>
+                    <input type="text" class="form-control" id="propertyType0" name="propertyType[]">
+                </div>
+                <div class="form-group">
+                    <label for="picUrl0">Property Picture:</label>
+                    <input type="file" class="form-control-file" id="picUrl0" name="picUrl[]" accept="image/*">
+                    <div class="error-message" id="picUrl0Error"></div>
+                </div>
+            </div>
+        </div>
+        <div class="button-container">
+            <button type="button" class="btn btn-secondary" id="addProperty">Add</button>
+            <button type="button" class="btn btn-danger" id="removeProperty">Delete</button>
+    
+            <button type="button" class="btn btn-primary" id="propertyNext">Next</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    let propertyCount = 1;
+   
+    //localStorage.setItem('sessionID', sessionID);
+
+
+        document.getElementById("removeProperty").addEventListener("click", function() {
+       const propertiesContainer = document.getElementById("propertiesContainer");
+
+        // Check if there's more than one property-group to remove
+       if (propertiesContainer.children.length > 1) {
+            // Remove the last property-group
+            propertiesContainer.removeChild(propertiesContainer.lastChild);
+            propertyCount--; // Decrement propertyCount
+       } else {
+            // Display an error message if you are trying to remove the last property
+           alert("You cannot remove the last property.");
+       }
+        });
+
+    document.getElementById("addProperty").addEventListener("click", function() {
+        const propertiesContainer = document.getElementById("propertiesContainer");
+        const newProperty = document.createElement("div");
+        let isValid = true;
+        //let propertyData = {};
+        newProperty.classList.add("property-group");
+        newProperty.innerHTML = `
+            <div class="form-group">
+                <label for="name${propertyCount}">Property Name:</label>
+                <input type="text" class="form-control" id="name${propertyCount}" name="name[]" required>
+                <div class="error-message" id="name${propertyCount}Error"></div>
+            </div>
+            <div class="form-group">
+                <label for="address${propertyCount}">Address:</label>
+                <input type="text" class="form-control" id="address${propertyCount}" name="address[]" required>
+                <div class="error-message" id="address${propertyCount}Error"></div>
+            </div>
+            <div class="form-group">
+                <label for="description${propertyCount}">Description:</label>
+                <textarea class="form-control" id="description${propertyCount}" name="description[]" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="bedrooms${propertyCount}">Bedrooms:</label>
+                <input type="number" class="form-control" id="bedrooms${propertyCount}" name="bedrooms[]" min="0" value="1" required>
+                 <div class="error-message" id="bedrooms${propertyCount}Error"></div>
+            </div>
+            <div class="form-group">
+                <label for="bathrooms${propertyCount}">Bathrooms:</label>
+                <input type="number" class="form-control" id="bathrooms${propertyCount}" name="bathrooms[]" min="0" value="1" required>
+                <div class="error-message" id="bathrooms${propertyCount}Error"></div>
+            </div>
+            <div class="form-group">
+                <label for="propertyType${propertyCount}">Property Type:</label>
+                <input type="text" class="form-control" id="propertyType${propertyCount}" name="propertyType[]">
+            </div>
+            <div class="form-group">
+                <label for="picUrl${propertyCount}">Property Picture:</label>
+                <input type="file" class="form-control-file" id="picUrl${propertyCount}" name="picUrl[]" accept="image/*">
+                 <div class="error-message" id="picUrl${propertyCount}Error"></div>
+            </div>
+        `;
+        propertiesContainer.appendChild(newProperty);
+        propertyCount++;
+    });
+
+    document.getElementById("propertyNext").addEventListener("click", function() {
+        let isValid = true;
+        let propertyData = {};
+
+        // Clear previous error messages
+        for (let i = 0; i < propertyCount; i++) {
+            document.getElementById(`name${i}Error`).textContent = "";
+            document.getElementById(`address${i}Error`).textContent = "";
+            document.getElementById(`bedrooms${i}Error`).textContent = "";
+            document.getElementById(`bathrooms${i}Error`).textContent = "";
+            document.getElementById(`picUrl${i}Error`).textContent = "";
+        }
+
+        // Validation
+        for (let i = 0; i < propertyCount; i++) {
+            const name = document.getElementById(`name${i}`).value.trim();
+            const address = document.getElementById(`address${i}`).value.trim();
+            const bedrooms = document.getElementById(`bedrooms${i}`).value.trim();
+            const bathrooms = document.getElementById(`bathrooms${i}`).value.trim();
+
+            if (name === "") {
+                document.getElementById(`name${i}Error`).textContent = "Property Name is required.";
+                isValid = false;
+            }
+            if (address === "") {
+                document.getElementById(`address${i}Error`).textContent = "Address is required.";
+                isValid = false;
+            }
+            if (bedrooms === "") {
+                document.getElementById(`bedrooms${i}Error`).textContent = "Bedrooms is required.";
+                isValid = false;
+            }
+             if (bathrooms === "") {
+                document.getElementById(`bathrooms${i}Error`).textContent = "Bathrooms is required.";
+                isValid = false;
+            }
+
+        }
+
+        if (isValid) {
+            // Store data and continue
+            for (let i = 0; i < propertyCount; i++) {
+                  const propertyId = generateId(); // generate the property id for each property
+                propertyData[propertyId]={
+                
+                    name: document.getElementById(`name${i}`).value,
+                    address: document.getElementById(`address${i}`).value,
+                    description: document.getElementById(`description${i}`).value,
+                    bedrooms: document.getElementById(`bedrooms${i}`).value,
+                    bathrooms: document.getElementById(`bathrooms${i}`).value,
+                    propertyType: document.getElementById(`propertyType${i}`).value,
+                    // handle file upload and populate this on backend and store the image URL
+                };
+            }
+
+            //console.log(propertyData);
+            localStorage.setItem('properties', JSON.stringify(propertyData));
+              
+            window.location.href = "select_property1.html";
+        } else {
+            // Display overall error message (optional)
+            alert("Please correct the errors in the form.");
+        }
+    });
+    function generateId() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+</script>
+
+</body>
+</html>

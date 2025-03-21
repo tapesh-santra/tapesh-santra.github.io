@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .section-group {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container form-container">
+    <h2>Section Information</h2>
+    <form id="sectionForm">
+        <div id="sectionsContainer">
+            <!-- Initial Section -->
+            <div class="section-group">
+                <div class="form-group">
+                    <label for="sectionName0">Section Name:</label>
+                    <input type="text" class="form-control" id="sectionName0" name="sectionName[]" required>
+                    <div class="error-message" id="sectionName0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="sectionDescription0">Section Description:</label>
+                    <textarea class="form-control" id="sectionDescription0" name="sectionDescription[]" rows="3"></textarea>
+                     <div class="error-message" id="sectionDescription0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="sectionImage0">Section Image:</label>
+                    <input type="file" class="form-control-file" id="sectionImage0" name="sectionImage[]" accept="image/*">
+                    <div class="error-message" id="sectionImage0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="sectionVideo0">Section Video URL:</label>
+                    <input type="url" class="form-control" id="sectionVideo0" name="sectionVideo[]" >
+                    <div class="error-message" id="sectionVideo0Error"></div>
+                </div>
+            </div>
+        </div>
+         <div class="button-container">
+            <button type="button" class="btn btn-secondary" id="addSection">Add</button>
+            <button type="button" class="btn btn-danger" id="removeSection">Delete</button>
+            <button type="button" class="btn btn-primary" id="sectionBack">Back</button>
+            <button type="button" class="btn btn-primary" id="sectionNext">Next</button>
+        </div>
+    
+        
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    let sectionCount = 1;
+    let selectedProperty = JSON.parse(localStorage.getItem('selectedProperty')) || {};
+    document.addEventListener("DOMContentLoaded", function() {
+    
+         selectedProperty = JSON.parse(localStorage.getItem('selectedProperty')) || {};
+    });
+
+     document.getElementById("removeSection").addEventListener("click", function() {
+       const sectionsContainer = document.getElementById("sectionsContainer");
+
+        // Check if there's more than one section-group to remove
+       if (sectionsContainer.children.length > 1) {
+            // Remove the last section-group
+            sectionsContainer.removeChild(sectionsContainer.lastChild);
+            sectionCount--; // Decrement sectionCount
+       } else {
+            // Display an error message if you are trying to remove the last section
+           alert("You cannot remove the last section.");
+       }
+        });
+    document.getElementById("addSection").addEventListener("click", function() {
+        const sectionsContainer = document.getElementById("sectionsContainer");
+        const newSection = document.createElement("div");
+        newSection.classList.add("section-group");
+        newSection.innerHTML = `
+            <div class="form-group">
+                <label for="sectionName${sectionCount}">Section Name:</label>
+                <input type="text" class="form-control" id="sectionName${sectionCount}" name="sectionName[]" required>
+                 <div class="error-message" id="sectionName${sectionCount}Error"></div>
+            </div>
+            <div class="form-group">
+                <label for="sectionDescription${sectionCount}">Section Description:</label>
+                <textarea class="form-control" id="sectionDescription${sectionCount}" name="sectionDescription[]" rows="3"></textarea>
+                 <div class="error-message" id="sectionDescription${sectionCount}Error"></div>
+            </div>
+            </div><div class="form-group">
+                <label for="sectionImage${sectionCount}">Section Image:</label>
+                <input type="file" class="form-control-file" id="sectionImage${sectionCount}" name="sectionImage[]" accept="image/*">
+                 <div class="error-message" id="sectionImage${sectionCount}Error"></div>
+            </div>
+             <div class="form-group">
+                <label for="sectionVideo${sectionCount}">Section Video URL:</label>
+                <input type="url" class="form-control" id="sectionVideo${sectionCount}" name="sectionVideo[]" >
+                 <div class="error-message" id="sectionVideo${sectionCount}Error"></div>
+             </div>
+        `;
+        sectionsContainer.appendChild(newSection);
+        sectionCount++;
+    });
+
+    document.getElementById("sectionNext").addEventListener("click", function() {
+        let isValid = true;
+        const sectionData = [];
+
+        // Clear previous error messages
+        for (let i = 0; i < sectionCount; i++) {
+            document.getElementById(`sectionName${i}Error`).textContent = "";
+            document.getElementById(`sectionDescription${i}Error`).textContent = "";
+        }
+
+        // Validation
+        for (let i = 0; i < sectionCount; i++) {
+            const sectionName = document.getElementById(`sectionName${i}`).value.trim();
+            const sectionDescription = document.getElementById(`sectionDescription${i}`).value.trim();
+
+            if (sectionName === "") {
+                document.getElementById(`sectionName${i}Error`).textContent = "Section Name is required.";
+                isValid = false;
+            }
+            if (sectionDescription === "") {
+            document.getElementById(`sectionDescription${i}Error`).textContent = "Section Description is required.";
+                isValid = false;
+            }
+
+
+        }
+
+        if (isValid) {
+            // Store data and continue
+            for (let i = 0; i < sectionCount; i++) {
+                sectionData.push({
+                    sectionId : generateId(),
+                    sectionName: document.getElementById(`sectionName${i}`).value,
+                    sectionDescription: document.getElementById(`sectionDescription${i}`).value,
+                    sectionImage : document.getElementById(`sectionImage${i}`).value,
+                    sectionVideo : document.getElementById(`sectionVideo${i}`).value,
+                });
+            }
+            //localStorage.setItem('sectionData', JSON.str
+
+            // Store data in localStorage
+            let allSectionData = {}
+            if (localStorage.getItem('allSectionData'))
+                //if it exists in local storage , read what's already in local storage
+                allSectionData = JSON.parse(localStorage.getItem('allSectionData')) || {};
+            
+            allSectionData[selectedProperty.propertyId] = sectionData;
+            localStorage.setItem('allSectionData', JSON.stringify(allSectionData));
+
+             window.location.href = "recommendation.html";
+        } else {
+            // Display overall error message (optional)
+            alert("Please correct the errors in the form.");
+        }
+    });
+    function generateId() 
+    {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+
+document.getElementById('sectionBack').addEventListener("click", function() {
+    window.location.href = "select_property1.html";
+})
+</script>
+
+</body>
+</html>

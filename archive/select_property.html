@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Property</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+                /* The Modal (background) */
+        .modal {
+           display: none; /* Hidden by default */
+           position: fixed; /* Stay in place */
+           z-index: 1; /* Sit on top */
+           left: 0;
+           top: 0;
+           width: 100%; /* Full width */
+           height: 100%; /* Full height */
+           overflow: auto; /* Enable scroll if needed */
+           background-color: rgb(0,0,0); /* Fallback color */
+           background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+           justify-content: center;
+           align-items: center;
+           display: flex;
+           
+         }
+        
+         /* Modal Content */
+         .modal-content {
+           background-color: #fefefe;
+           margin: 15% auto; /* 15% from the top and centered */
+          /*margin: 15% auto;  15% from the top and centered */
+           padding: 20px;
+           border: 1px solid #888;
+           width: 60%; /* 60% of the form container's width */
+           max-width: 600px; /* Ensure it doesn't become wider than the form */
+          
+         }
+        
+         /* The Close Button */
+         .close {
+           color: #aaa;
+           float: right;
+           font-size: 28px;
+           font-weight: bold;
+         }
+        
+         .close:hover,
+         .close:focus {
+           color: black;
+           text-decoration: none;
+           cursor: pointer;
+         }
+    </style>
+</head>
+<body>
+
+<div class="container form-container">
+    <h2>Select a Property</h2>
+    <form id="selectPropertyForm">
+        <div class="form-group">
+            <!-- The Modal -->
+            <div id="congratulationsModal" class="modal" style="display: none;">
+                 <div class="modal-content">
+                    <span class="close">&times;</span>
+                     <p>Congratulations! you have already created guidebooks for all your properties</p>
+               </div>
+            <label for="propertySelect">Choose a Property:</label>
+            <select class="form-control" id="propertySelect" name="propertySelect" required>
+                <!-- Options will be added here dynamically -->
+            </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="propertyBack">Back</button>
+        <button type="button" class="btn btn-success" id="selectProperty">Select</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Retrieve properties from localStorage
+        const properties = JSON.parse(localStorage.getItem('properties')) || [];
+        const selectedPropertiesList = JSON.parse(localStorage.getItem('selectedPropertiesList')) || [];
+        const availableProperties = properties.filter(property => {
+                return !selectedPropertiesList.some(selectedProperty => selectedProperty.propertyId === property.propertyId);
+            });
+
+        // Get the select element
+        const propertySelect = document.getElementById('propertySelect');
+
+        if (availableProperties.length === 0) {
+            // Show the congratulations message as a pop-up
+            showCongratulationsPopup();
+        }
+        else
+        {
+        availableProperties.forEach(property => {
+            const option = document.createElement('option');
+            option.value = property.propertyId; // Use a unique value, like an ID
+            option.text = property.name; // Display the property name
+            propertySelect.appendChild(option);
+        }
+        );
+        }
+    });
+
+    document.getElementById("propertyBack").addEventListener("click", function() {
+         window.location.href = "property.html";
+    });
+    document.getElementById("selectProperty").addEventListener("click", function() {
+        // Get the selected property ID
+        const selectedPropertyId = document.getElementById("propertySelect").value;
+
+         // Retrieve the properties array from localStorage
+        const properties = JSON.parse(localStorage.getItem('properties')) || [];
+        // Find the selected property object based on the ID
+        //const selectedProperty = properties.find(property => property.propertyId === selectedPropertyId);
+        const selectedPropertiesList = JSON.parse(localStorage.getItem('selectedPropertiesList')) || [];
+         
+        // Check if property is already added
+        const propertyAlreadyAdded = selectedPropertiesList.some(property => property.propertyId === selectedProperty.propertyId);
+
+        // Store the selected property object in localStorage
+        localStorage.setItem('selectedProperty', JSON.stringify(selectedProperty));
+        if(!propertyAlreadyAdded)
+            {
+                selectedPropertiesList.push(selectedProperty);
+                localStorage.setItem('selectedPropertiesList', JSON.stringify(selectedProperties));
+            }else{
+                alert("Property already added to the list");
+            }
+
+
+        window.location.href = "section.html";
+    });
+
+function showCongratulationsPopup() {
+        // Get the modal
+        const modal = document.getElementById("congratulationsModal");
+
+        // Get the <span> element that closes the modal
+        const span = document.getElementsByClassName("close")[0];
+
+        // Open the modal
+        modal.style.display = "block";
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        };
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+    }
+</script>
+
+</body>
+</html>
