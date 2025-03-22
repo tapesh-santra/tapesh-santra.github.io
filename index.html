@@ -20,7 +20,7 @@
             padding: 30px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 90%; /* Make the container responsive */
+            width: 90%; /* Make the container responsive */     
             max-width: 400px;
             text-align: center;
         }
@@ -65,8 +65,8 @@
 
     <div class="social-login">
         
-        <!--button class="social-button google" id="googleLogin">Login with Google</button-->
-        <div 
+        <button class="social-button google" id="googleLogin">Login with Google</buttonß>
+        <!--div 
             class = "g_id_signin social-button google" 
             data-type="standard"
             data-width="100%" 
@@ -75,10 +75,19 @@
             id="g_id_onload"
             data-client_id="808512949870-b5k55mrl4amuqpkrfaq7jbqse61vsej2" data-login_uri="https://your domain/your_login_endpoint"
             data-auto_prompt="false">
+<<<<<<< HEAD
+        </div-->
+        <button class="social-button facebook" id="facebookLogin">Login with Facebook</button>
+        <!--div class="social-button facebook" id="facebookLogin"-->
+        <!--
+        <div class="fb-login-button" 
+             data-width="" 
+=======
         </div>
         <div class="social-button facebook" id="facebookLogin">
         <!--div class="fb-login-button" 
              data-width="100%" 
+>>>>>>> 21cfe470f762de2fb311457822a5609eff896857
              data-size="large" 
              data-button-type=""
              data-layout=""
@@ -89,6 +98,12 @@
         Login with Facebook
 
         </div>
+<<<<<<< HEAD
+      -->
+
+        </div>
+=======
+>>>>>>> 21cfe470f762de2fb311457822a5609eff896857
 
 
     <!--button class="g_id_signin social-button google" id="googleLogin"> Log in with Google </button-->    
@@ -198,7 +213,17 @@
         xfbml      : true,                     // Parse social plugins on this webpage.
         version    : 'v22.0'           // Use this Graph API version for this call.
       });
-  
+
+      FB.login(function(response) {
+                      if (response.authResponse) {
+                           console.log('Welcome!  Fetching your information.... ');
+                           FB.api('/me', {fields: 'name, email'}, function(response) {
+                               document.getElementById("profile").innerHTML = "Good to see you, " + response.name + ". i see your email address is " + response.email
+                           });
+                      } else { 
+                           <!-- If you are not logged in, the login dialog will open for you to login asking for permission to get your public profile and email -->
+                           console.log('User cancelled login or did not fully authorize.'); }
+            });
   
       FB.getLoginStatus(function(response) {   // Called after the JS SDK has been initialized.
         statusChangeCallback(response);        // Returns the login status.
